@@ -42,8 +42,12 @@
           return;
         }
 
-        // Send data to the Web App
-        fetch("https://script.google.com/macros/s/AKfycbzbHk4zEhFq2qjVKYob0XngbI2dPFPgIJSwSSU7b9RduZT8ztr7k_jVU76kXAPPSMg6/exec", {
+        // Use CORS Anywhere Proxy to bypass CORS restrictions
+        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+        const webAppUrl =
+          "https://script.google.com/macros/s/AKfycbzbHk4zEhFq2qjVKYob0XngbI2dPFPgIJSwSSU7b9RduZT8ztr7k_jVU76kXAPPSMg6/exec";
+
+        fetch(proxyUrl + webAppUrl, {
           method: "POST",
           body: JSON.stringify({
             salesManager: salesManager,
@@ -54,8 +58,17 @@
             "Content-Type": "application/json",
           },
         })
-          .then((response) => alert("Form submitted successfully!"))
-          .catch((error) => console.error("Error:", error));
+          .then((response) => {
+            if (response.ok) {
+              alert("Form submitted successfully!");
+            } else {
+              alert("Error: Form submission failed.");
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch Error:", error);
+            alert("An error occurred while submitting the form.");
+          });
       }
     </script>
   </head>
