@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Product Entry</title>
+    <script>
+      function addRow() {
+        var table = document.getElementById("productTable");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+
+        cell1.innerHTML =
+          '<input type="text" name="productName[]" placeholder="Product Name">';
+        cell2.innerHTML =
+          '<input type="number" name="quantity[]" placeholder="Quantity">';
+      }
+
+      function submitForm() {
+        var salesManager = document.getElementById("salesManager").value;
+        var date = document.getElementById("date").value;
+        var productNames = Array.from(
+          document.getElementsByName("productName[]")
+        ).map((input) => input.value);
+        var quantities = Array.from(
+          document.getElementsByName("quantity[]")
+        ).map((input) => input.value);
+
+        var products = productNames.map((name, index) => ({
+          name: name,
+          quantity: quantities[index],
+        }));
+
+        fetch("WEB_APP_URL", {
+          method: "POST",
+          body: JSON.stringify({
+            salesManager: salesManager,
+            date: date,
+            products: products,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((response) => alert("Form submitted successfully!"));
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Sales Report Form</h1>
+    <label for="salesManager">Sales Manager Name:</label>
+    <input type="text" id="salesManager" required /><br /><br />
+
+    <label for="date">Date of Submission:</label>
+    <input type="date" id="date" required /><br /><br />
+
+    <table id="productTable">
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+      </tr>
+      <tr>
+        <td>
+          <input type="text" name="productName[]" placeholder="Product Name" />
+        </td>
+        <td>
+          <input type="number" name="quantity[]" placeholder="Quantity" />
+        </td>
+      </tr>
+    </table>
+
+    <button type="button" onclick="addRow()">Add Another Product</button
+    ><br /><br />
+
+    <button type="button" onclick="submitForm()">Submit</button>
+  </body>
+</html>
