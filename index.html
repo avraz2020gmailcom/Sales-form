@@ -43,11 +43,11 @@
         }
 
         // Use the LocalTunnel URL as the proxy
-        const proxyUrl = "https://cuddly-lemons-make.loca.lt/"; // Replace with your LocalTunnel URL
+        const proxyUrl = "https://cuddly-lemons-make.loca.lt/?url="; // Proxy URL with query parameter
         const webAppUrl =
-          "https://script.google.com/macros/s/AKfycbyNeGtJZg0gys45x8bAQ3jLDeosm-I8io3VX5NC-XhmGKGPbcQhyeYmR4z68hgOEcTBUw/exec";
+          "https://script.google.com/macros/s/AKfycbzbHk4zEhFq2qjVKYob0XngbI2dPFPgIJSwSSU7b9RduZT8ztr7k_jVU76kXAPPSMg6/exec";
 
-        fetch(proxyUrl + webAppUrl, {
+        fetch(proxyUrl + encodeURIComponent(webAppUrl), {
           method: "POST",
           body: JSON.stringify({
             salesManager: salesManager,
