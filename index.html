@@ -42,8 +42,8 @@
           return;
         }
 
-        // Use CORS Anywhere Proxy to bypass CORS restrictions
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+        // Use the LocalTunnel URL as the proxy
+        const proxyUrl = "https://cuddly-lemons-make.loca.lt/"; // Replace with your LocalTunnel URL
         const webAppUrl =
           "https://script.google.com/macros/s/AKfycbzbHk4zEhFq2qjVKYob0XngbI2dPFPgIJSwSSU7b9RduZT8ztr7k_jVU76kXAPPSMg6/exec";
 
@@ -56,6 +56,7 @@
           }),
           headers: {
             "Content-Type": "application/json",
+            "x-requested-with": "XMLHttpRequest", // Required header for cors-anywhere
           },
         })
           .then((response) => {
