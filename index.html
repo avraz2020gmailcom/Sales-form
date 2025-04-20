@@ -1,104 +1,106 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Dynamic Product Entry</title>
-    <script>
-      function addRow() {
-        var table = document.getElementById("productTable");
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+      font-family: 'poppins', sans-serif;
+      font-size: 18px;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f4f4f9;
+    }
+    .container {
+      width: 500px;
+      padding: 30px;
+      border: 1px solid #eeeeee;
+      border-radius: 10px;
+      background-color: #003b5b;
+    }
+    h4 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: white;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    #submit {
+      border: none;
+      background-color: orangered;
+      color: white;
+      width: 200px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #submit:hover {
+      background-color: #333333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form method="post" action="https://script.google.com/macros/s/AKfycbz1XK0528Xo87SjPhujuLNuerxlx1zpaauhE6mE8AWH5yexT9CzHTPa5ss31BJZDvlKgw/exec" name="contact-form">
+      <h4>Contact Us</h4>
+      <input type="text" name="your-name" placeholder="Name" required>
+      <input type="text" name="your-number" placeholder="Number" required>
+      <input type="email" name="your-email" placeholder="Email" required>
+      <textarea name="message" rows="7" placeholder="Your Message" required></textarea>
+      <input type="submit" value="Submit" id="submit">
+    </form>
+  </div>
 
-        cell1.innerHTML =
-          '<input type="text" name="productName[]" placeholder="Product Name">';
-        cell2.innerHTML =
-          '<input type="number" name="quantity[]" placeholder="Quantity">';
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz1XK0528Xo87SjPhujuLNuerxlx1zpaauhE6mE8AWH5yexT9CzHTPa5ss31BJZDvlKgw/exec'; // Replace with your actual Web App URL
+
+    const form = document.forms['contact-form'];
+
+    form.addEventListener('submit', e => {
+      e.preventDefault(); // Prevent the default form submission
+
+      const formData = new FormData(form); // Create a FormData object from the form
+
+      // Log each field in the form for debugging
+      console.log("Form Data:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
       }
 
-      function submitForm() {
-        var salesManager = document.getElementById("salesManager").value;
-        var date = document.getElementById("date").value;
-        var productNames = Array.from(
-          document.getElementsByName("productName[]")
-        ).map((input) => input.value.trim());
-        var quantities = Array.from(
-          document.getElementsByName("quantity[]")
-        ).map((input) => input.value.trim());
-
-        // Combine product names and quantities into an array of objects
-        var products = [];
-        for (var i = 0; i < productNames.length; i++) {
-          if (productNames[i] && quantities[i]) {
-            products.push({
-              name: productNames[i],
-              quantity: parseInt(quantities[i], 10),
-            });
+      // Send the form data to the Web App URL
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-        }
-
-        // Validate inputs
-        if (!salesManager || !date || products.length === 0) {
-          alert("Please fill out all required fields.");
-          return;
-        }
-
-        // Use the LocalTunnel URL as the proxy
-        const proxyUrl = "https://cuddly-lemons-make.loca.lt/?url="; // Proxy URL with query parameter
-        const webAppUrl =
-          "https://script.google.com/macros/s/AKfycbzbHk4zEhFq2qjVKYob0XngbI2dPFPgIJSwSSU7b9RduZT8ztr7k_jVU76kXAPPSMg6/exec";
-
-        fetch(proxyUrl + encodeURIComponent(webAppUrl), {
-          method: "POST",
-          body: JSON.stringify({
-            salesManager: salesManager,
-            date: date,
-            products: products,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            "x-requested-with": "XMLHttpRequest", // Required header for cors-anywhere
-          },
+          return response.json(); // Parse the JSON response
         })
-          .then((response) => {
-            if (response.ok) {
-              alert("Form submitted successfully!");
-            } else {
-              alert("Error: Form submission failed.");
-            }
-          })
-          .catch((error) => {
-            console.error("Fetch Error:", error);
-            alert("An error occurred while submitting the form.");
-          });
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Sales Report Form</h1>
-    <label for="salesManager">Sales Manager Name:</label>
-    <input type="text" id="salesManager" required /><br /><br />
-
-    <label for="date">Date of Submission:</label>
-    <input type="date" id="date" required /><br /><br />
-
-    <table id="productTable">
-      <tr>
-        <th>Product Name</th>
-        <th>Quantity</th>
-      </tr>
-      <tr>
-        <td>
-          <input type="text" name="productName[]" placeholder="Product Name" />
-        </td>
-        <td>
-          <input type="number" name="quantity[]" placeholder="Quantity" />
-        </td>
-      </tr>
-    </table>
-
-    <button type="button" onclick="addRow()">Add Another Product</button
-    ><br /><br />
-
-    <button type="button" onclick="submitForm()">Submit</button>
-  </body>
+        .then(data => {
+          if (data.result === 'success') {
+            alert("Thank you! Your form has been submitted successfully.");
+            window.location.reload(); // Reload the page on success
+          } else {
+            alert("Error submitting the form: " + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Fetch Error:', error.message); // Log any errors
+          alert("An unexpected error occurred. Please try again later.");
+        });
+    });
+  </script>
+</body>
 </html>
